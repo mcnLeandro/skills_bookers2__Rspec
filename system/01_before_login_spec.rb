@@ -1,11 +1,11 @@
 require 'rails_helper'
 
 describe '[STEP1] ユーザログイン前のテスト' do
-  describe 'ヘッダーのテスト: ログインしていない場合' do 
+  describe 'ヘッダーのテスト: ログインしていない場合' do
     before do
       visit root_path
     end
-    
+
     #***********************************************************************************
     # 未ログイン時、ヘッダーに"Home", "About", "Sign Up", "Log In"のリンクが表示される
     #***********************************************************************************
@@ -33,7 +33,7 @@ describe '[STEP1] ユーザログイン前のテスト' do
     #***********************************************************************************
     # 未ログイン時、ヘッダーに"Home", "About", "Sign Up", "Log In"のリンクから
     # それぞれ「トップページ」「アバウトページ」「新規登録画面」「ログイン画面」にリダイレクトしている
-    # 
+    #
     #***********************************************************************************
     context 'リンクの内容を確認' do
       subject { current_path }
@@ -75,16 +75,21 @@ describe '[STEP1] ユーザログイン前のテスト' do
   describe 'アクセス制限のテスト: アクセスできず、ログイン画面に遷移する' do
     subject { current_path }
 
+    let(:user) { create(:user) }
+    let!(:other_user) { create(:user) }
+    let!(:book) { create(:book, user: user) }
+    let!(:other_book) { create(:book, user: other_user) }
+
     it 'ユーザ一覧画面' do
       visit users_path
       is_expected.to eq '/users/sign_in'
     end
     it 'ユーザ詳細画面' do
-      visit user_path(user)
+      visit user_path(other_user)
       is_expected.to eq '/users/sign_in'
     end
     it 'ユーザ情報編集画面' do
-      visit edit_user_path(user)
+      visit edit_user_path(other_user)
       is_expected.to eq '/users/sign_in'
     end
     it '投稿一覧画面' do
@@ -92,13 +97,13 @@ describe '[STEP1] ユーザログイン前のテスト' do
       is_expected.to eq '/users/sign_in'
     end
     it '投稿詳細画面' do
-      visit book_path(book)
+      visit book_path(other_book)
       is_expected.to eq '/users/sign_in'
     end
     it '投稿編集画面' do
-      visit edit_book_path(book)
+      visit edit_book_path(other_book)
       is_expected.to eq '/users/sign_in'
     end
   end
-  
+
 end

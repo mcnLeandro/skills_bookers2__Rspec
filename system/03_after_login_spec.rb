@@ -1,7 +1,7 @@
 require 'rails_helper'
 
-describe '[STEP2] ユーザログイン後のテスト' do
-  
+describe '[STEP3] ユーザログイン後のテスト' do
+
   let(:user) { create(:user) }
   let!(:other_user) { create(:user) }
   let!(:book) { create(:book, user: user) }
@@ -13,9 +13,9 @@ describe '[STEP2] ユーザログイン後のテスト' do
     fill_in 'user[password]', with: user.password
     click_button 'Log in'
   end
-  
+
   shared_examples 'サイドバーの確認' do
-    
+
     context 'サイドバーの確認' do
       #************************************
       # 画像、名前、自己紹介が表示される
@@ -50,24 +50,24 @@ describe '[STEP2] ユーザログイン後のテスト' do
       it 'Create Bookボタンが表示される' do
         expect(page).to have_button 'Create Book'
       end
-      
+
       context '投稿成功のテスト' do
         before do
           fill_in 'book[title]', with: Faker::Lorem.characters(number: 5)
           fill_in 'book[body]', with: Faker::Lorem.characters(number: 20)
         end
-  
+
         it '自分の新しい投稿が正しく保存される' do
           expect { click_button 'Create Book' }.to change(user.books, :count).by(1)
         end
       end
-      
+
       context '投稿データの新規投稿失敗' do
         before do
           @body = Faker::Lorem.characters(number: 19)
           fill_in 'book[body]', with: @body
         end
-  
+
         it '投稿が保存されない' do
           expect { click_button 'Create Book' }.not_to change(Book.all, :count)
         end
@@ -76,10 +76,10 @@ describe '[STEP2] ユーザログイン後のテスト' do
           expect(page).to have_content "can't be blank"
         end
       end
-      
+
     end
   end
-  
+
   #***************************************************************************************
   # ログイン時、ヘッダーに"Home", "Users", "Books", "Log Out"のリンクから
   # 「トップページ」「ユーザーの一覧画面」「投稿された本一覧画面」「ログアウト処理」にリダイレクトしている
@@ -107,8 +107,8 @@ describe '[STEP2] ユーザログイン後のテスト' do
         is_expected.to eq '/books'
       end
     end
-    
-    
+
+
   end
   #***********************************
   #user/index
@@ -144,7 +144,7 @@ describe '[STEP2] ユーザログイン後のテスト' do
     end
 
     include_context 'サイドバーの確認'
-    
+
   end
   #*********************************
   # user/show
@@ -152,7 +152,7 @@ describe '[STEP2] ユーザログイン後のテスト' do
     before do
       visit user_path(user)
     end
-    
+
     context '表示の確認' do
       it 'URLが正しい' do
         expect(current_path).to eq '/users/' + user.id.to_s
@@ -245,10 +245,6 @@ describe '[STEP2] ユーザログイン後のテスト' do
       before do
         @user_old_name = user.name
         @name = Faker::Lorem.characters(number: 1)
-        visit new_user_session_path
-        fill_in 'user[name]', with: @user_old_name
-        fill_in 'user[password]', with: user.password
-        click_button 'Log in'
         visit edit_user_path(user)
         fill_in 'user[name]', with: @name
         click_button 'Update User'
@@ -258,16 +254,16 @@ describe '[STEP2] ユーザログイン後のテスト' do
         expect(user.reload.name).to eq @user_old_name
       end
     end
-    
+
   end
   #*************************************************
   # book/index
   describe '投稿一覧画面のテスト' do
-    
+
     before do
       visit books_path
     end
-    
+
     context '表示内容の確認' do
       it 'URLが正しい' do
         expect(current_path).to eq '/books'
@@ -290,14 +286,14 @@ describe '[STEP2] ユーザログイン後のテスト' do
         expect(page).to have_content other_book.body
       end
     end
-    
+
     include_context 'サイドバーの確認'
-    
+
   end
   #*********************************
   # book/show
   describe '自分の投稿詳細画面のテスト' do
-    
+
     before do
       visit book_path(book)
     end
@@ -362,17 +358,11 @@ describe '[STEP2] ユーザログイン後のテスト' do
         expect(current_path).to eq '/books'
       end
     end
-    
+
   end
-  
+
   describe 'アクセス制限のテスト:' do
-    
-    before do
-      visit new_user_session_path
-      fill_in 'user[name]', with: user.name
-      fill_in 'user[password]', with: user.password
-      click_button 'Log in'
-    end
+
     #*******************************************************
     # 自分以外のユーザーのユーザー編集画面にアクセスできない
     #*******************************************************
@@ -391,6 +381,6 @@ describe '[STEP2] ユーザログイン後のテスト' do
         expect(current_path).to eq '/users/' + user.id.to_s
       end
     end
-    
+
   end
 end

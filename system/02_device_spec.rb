@@ -101,8 +101,8 @@ describe '[STEP2] ログイン機能のテスト' do
         click_button 'Log in'
       end
 
-      it 'ログイン後が成功する' do
-        expect(current_user).not_to eq(nil)
+      it 'ログインに成功する' do
+        expect(current_path).not_to eq '/users/sign_in'
       end
     end
     #**************************************************************************
@@ -116,7 +116,7 @@ describe '[STEP2] ログイン機能のテスト' do
       end
 
       it 'ログインに失敗する' do
-        expect(current_user).to eq(nil)
+        expect(current_path).to eq '/users/sign_in'
       end
     end
   end
